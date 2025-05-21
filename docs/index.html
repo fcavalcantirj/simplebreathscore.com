@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momma's Little Helper - Breathing Score</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c5282;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #startBtn {
+            background-color: #48bb78;
+            color: white;
+        }
+        #inhaleBtn {
+            background-color: #4299e1;
+            color: white;
+            display: none;
+        }
+        #exhaleBtn {
+            background-color: #ed8936;
+            color: white;
+            display: none;
+        }
+        #stopBtn {
+            background-color: #f56565;
+            color: white;
+            display: none;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .results {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ebf8ff;
+            border-radius: 5px;
+        }
+        .score {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            color: #2b6cb0;
+            margin: 10px 0;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .metric {
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .metric-title {
+            font-weight: bold;
+            color: #4a5568;
+        }
+        .metric-value {
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .breath-log {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            display: none;
+        }
+        #resetBtn {
+            display: block;
+            margin: 20px auto;
+            background-color: #718096;
+            color: white;
+        }
+        .status {
+            text-align: center;
+            font-style: italic;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Breathing Meditation Score</h1>
+        
+        <div class="timer" id="timer">00:00</div>
+        
+        <div class="status" id="status">Press Start to begin your breathing session</div>
+        
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="inhaleBtn">Inhale</button>
+            <button id="exhaleBtn">Exhale</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>Session Results</h2>
+            <div class="score" id="score">0.00</div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-title">Breaths Per Minute</div>
+                    <div class="metric-value" id="bpm">0.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-title">Session Duration</div>
+                    <div class="metric-value" id="duration">0:00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-title">Total Breaths</div>
+                    <div class="metric-value" id="totalBreaths">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-title">Avg Breath Cycle</div>
+                    <div class="metric-value" id="avgCycle">0.0s</div>
+                </div>
+            </div>
+            
+            <div class="breath-log" id="breathLog">
+                <h3>Breath Log</h3>
+                <div id="logEntries"></div>
+            </div>
+            
+            <button id="resetBtn">Start New Session</button>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const startBtn = document.getElementById('startBtn');
+        const inhaleBtn = document.getElementById('inhaleBtn');
+        const exhaleBtn = document.getElementById('exhaleBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const timerEl = document.getElementById('timer');
+        const statusEl = document.getElementById('status');
+        const resultsEl = document.getElementById('results');
+        const scoreEl = document.getElementById('score');
+        const bpmEl = document.getElementById('bpm');
+        const durationEl = document.getElementById('duration');
+        const totalBreathsEl = document.getElementById('totalBreaths');
+        const avgCycleEl = document.getElementById('avgCycle');
+        const breathLogEl = document.getElementById('breathLog');
+        const logEntriesEl = document.getElementById('logEntries');
+        
+        // Session data
+        let sessionData = {
+            startTime: null,
+            inhaleTimestamps: [],
+            exhaleTimestamps: [],
+            stopTime: null,
+            isActive: false,
+            timerInterval: null
+        };
+        
+        // Event Listeners
+        startBtn.addEventListener('click', startSession);
+        inhaleBtn.addEventListener('click', recordInhale);
+        exhaleBtn.addEventListener('click', recordExhale);
+        stopBtn.addEventListener('click', stopSession);
+        resetBtn.addEventListener('click', resetSession);
+        
+        // Functions
+        function startSession() {
+            sessionData.startTime = Date.now();
+            sessionData.isActive = true;
+            sessionData.inhaleTimestamps = [];
+            sessionData.exhaleTimestamps = [];
+            
+            // Update UI
+            startBtn.style.display = 'none';
+            inhaleBtn.style.display = 'inline-block';
+            exhaleBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'inline-block';
+            statusEl.textContent = 'Session started. Press Inhale when you breathe in, Exhale when you breathe out.';
+            
+            // Start timer
+            sessionData.timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - sessionData.startTime) / 1000);
+            const minutes = Math.floor(elapsedSeconds / 60);
+            const seconds = elapsedSeconds % 60;
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function recordInhale() {
+            if (sessionData.isActive) {
+                const timestamp = Date.now();
+                sessionData.inhaleTimestamps.push(timestamp);
+                
+                // Update status
+                const count = sessionData.inhaleTimestamps.length;
+                statusEl.textContent = `Inhale ${count} recorded`;
+                
+                // Flash button effect
+                inhaleBtn.style.backgroundColor = '#2b6cb0';
+                setTimeout(() => {
+                    inhaleBtn.style.backgroundColor = '';
+                }, 200);
+            }
+        }
+        
+        function recordExhale() {
+            if (sessionData.isActive) {
+                const timestamp = Date.now();
+                sessionData.exhaleTimestamps.push(timestamp);
+                
+                // Update status
+                const count = sessionData.exhaleTimestamps.length;
+                statusEl.textContent = `Exhale ${count} recorded`;
+                
+                // Flash button effect
+                exhaleBtn.style.backgroundColor = '#c05621';
+                setTimeout(() => {
+                    exhaleBtn.style.backgroundColor = '';
+                }, 200);
+            }
+        }
+        
+        function stopSession() {
+            if (!sessionData.isActive) return;
+            
+            sessionData.stopTime = Date.now();
+            sessionData.isActive = false;
+            clearInterval(sessionData.timerInterval);
+            
+            // Update UI
+            statusEl.textContent = 'Session completed. See your results below.';
+            inhaleBtn.style.display = 'none';
+            exhaleBtn.style.display = 'none';
+            stopBtn.style.display = 'none';
+            
+            // Calculate and display results
+            calculateResults();
+            resultsEl.style.display = 'block';
+        }
+        
+        function calculateResults() {
+            const sessionDurationMs = sessionData.stopTime - sessionData.startTime;
+            const sessionDurationMinutes = sessionDurationMs / (1000 * 60);
+            const breathCount = sessionData.inhaleTimestamps.length;
+            
+            // Calculate breaths per minute
+            const breathsPerMinute = breathCount / sessionDurationMinutes;
+            
+            // Format duration
+            const minutes = Math.floor(sessionDurationMs / (1000 * 60));
+            const seconds = Math.floor((sessionDurationMs % (1000 * 60)) / 1000);
+            const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Calculate average breath cycle
+            let avgCycle = 0;
+            if (breathCount > 1) {
+                let totalCycleTime = 0;
+                for (let i = 0; i < sessionData.inhaleTimestamps.length - 1; i++) {
+                    totalCycleTime += sessionData.inhaleTimestamps[i+1] - sessionData.inhaleTimestamps[i];
+                }
+                avgCycle = totalCycleTime / (breathCount - 1) / 1000; // in seconds
+            }
+            
+            // Calculate the score
+            const score = calculateBreathingScore(
+                sessionData.startTime,
+                sessionData.inhaleTimestamps,
+                sessionData.exhaleTimestamps,
+                sessionData.stopTime
+            );
+            
+            // Update UI
+            scoreEl.textContent = score.toFixed(2);
+            bpmEl.textContent = breathsPerMinute.toFixed(2);
+            durationEl.textContent = formattedDuration;
+            totalBreathsEl.textContent = breathCount;
+            avgCycleEl.textContent = `${avgCycle.toFixed(1)}s`;
+            
+            // Generate breath log
+            generateBreathLog();
+        }
+        
+        function generateBreathLog() {
+            breathLogEl.style.display = 'block';
+            logEntriesEl.innerHTML = '';
+            
+            // Show start
+            const startDate = new Date(sessionData.startTime);
+            const startTime = startDate.toLocaleTimeString();
+            const startEntry = document.createElement('div');
+            startEntry.textContent = `Started at ${startTime}`;
+            logEntriesEl.appendChild(startEntry);
+            
+            // Show inhales and exhales in sequence
+            const allEvents = [
+                ...sessionData.inhaleTimestamps.map(t => ({ time: t, type: 'Inhale' })),
+                ...sessionData.exhaleTimestamps.map(t => ({ time: t, type: 'Exhale' }))
+            ].sort((a, b) => a.time - b.time);
+            
+            allEvents.forEach((event, i) => {
+                const timeFromStart = (event.time - sessionData.startTime) / 1000; // in seconds
+                const minutes = Math.floor(timeFromStart / 60);
+                const seconds = Math.floor(timeFromStart % 60);
+                const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                const entry = document.createElement('div');
+                entry.textContent = `${event.type} at ${formattedTime}`;
+                logEntriesEl.appendChild(entry);
+            });
+            
+            // Show stop
+            const stopDate = new Date(sessionData.stopTime);
+            const stopTime = stopDate.toLocaleTimeString();
+            const stopEntry = document.createElement('div');
+            stopEntry.textContent = `Stopped at ${stopTime}`;
+            logEntriesEl.appendChild(stopEntry);
+        }
+        
+        function resetSession() {
+            // Reset UI
+            startBtn.style.display = 'inline-block';
+            resultsEl.style.display = 'none';
+            timerEl.textContent = '00:00';
+            statusEl.textContent = 'Press Start to begin your breathing session';
+            
+            // Clear session data
+            sessionData = {
+                startTime: null,
+                inhaleTimestamps: [],
+                exhaleTimestamps: [],
+                stopTime: null,
+                isActive: false,
+                timerInterval: null
+            };
+        }
+        
+        function calculateBreathingScore(startTime, inhaleTimestamps, exhaleTimestamps, stopTime) {
+            // Core measurements
+            const sessionDurationMs = stopTime - startTime;
+            const sessionDurationMinutes = sessionDurationMs / (1000 * 60);
+            const breathCount = inhaleTimestamps.length;
+            
+            // Make timestamps relative to start (in seconds)
+            const relativeInhales = inhaleTimestamps.map(t => (t - startTime) / 1000);
+            const relativeExhales = exhaleTimestamps.map(t => (t - startTime) / 1000);
+            
+            // Calculate breaths per minute (primary metric)
+            const breathsPerMinute = breathCount / sessionDurationMinutes;
+            
+            // Base score calculation (granular with decimals)
+            let score;
+            
+            if (breathsPerMinute <= 1) {
+                // 1 BPM or less (perfect): Score range 9.50 - 10.00
+                // The closer to 1 BPM exactly, the closer to perfect 10
+                const deviation = Math.abs(1 - breathsPerMinute);
+                score = 10 - (deviation * 0.5); // Small penalty for going below 1
+            } 
+            else if (breathsPerMinute <= 4) {
+                // Between 1-4 BPM: Score range 7.00 - 9.49
+                score = 9.5 - ((breathsPerMinute - 1) * (2.5/3));
+            } 
+            else if (breathsPerMinute <= 6) {
+                // Between 4-6 BPM: Score range 5.00 - 6.99
+                score = 7 - ((breathsPerMinute - 4) * (2/2));
+            } 
+            else if (breathsPerMinute <= 12) {
+                // Between 6-12 BPM: Score range 0.01 - 4.99
+                score = 5 - ((breathsPerMinute - 6) * (5/6));
+            } 
+            else {
+                // More than 12 BPM: Score is 0
+                score = 0;
+            }
+            
+            // Secondary adjustments for session length
+            // Longer sessions are harder to maintain, so give a small bonus
+            const durationBonus = Math.min(0.49, sessionDurationMinutes / 60); // Max 0.49 bonus for sessions ≥30 min
+            
+            // For very good scores (7+), apply a small adjustment based on breath consistency
+            let consistencyAdjustment = 0;
+            if (score >= 7 && breathCount > 3) {
+                // Calculate time between inhales
+                const intervals = [];
+                for (let i = 0; i < inhaleTimestamps.length - 1; i++) {
+                    intervals.push(inhaleTimestamps[i+1] - inhaleTimestamps[i]);
+                }
+                
+                // Get the standard deviation of intervals
+                const avgInterval = intervals.reduce((sum, val) => sum + val, 0) / intervals.length;
+                const stdDev = Math.sqrt(intervals.reduce((sum, val) => sum + Math.pow(val - avgInterval, 2), 0) / intervals.length);
+                
+                // Convert to coefficient of variation (relative consistency)
+                const cv = stdDev / avgInterval;
+                
+                // Apply small adjustment (-0.25 to +0.25) based on consistency
+                consistencyAdjustment = 0.25 - (cv * 0.5);
+                consistencyAdjustment = Math.max(-0.25, Math.min(0.25, consistencyAdjustment));
+            }
+            
+            // Final score with all adjustments
+            const finalScore = Math.max(0, Math.min(10, score + durationBonus + consistencyAdjustment));
+            
+            // Return score with 2 decimal places
+            return parseFloat(finalScore.toFixed(2));
+        }
+    </script>
+</body>
+</html>
