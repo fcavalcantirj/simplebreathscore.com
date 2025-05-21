@@ -1,3 +1,15 @@
+# Initial Development Prompt
+
+The initial prompt used to create SimpleBreathScore can be found at [manus.im](https://manus.im).
+
+This prompt was used to guide the development of the application, including:
+- Core breathing session tracking functionality
+- Scoring algorithm implementation
+- UI/UX design decisions
+- Technical architecture choices
+
+The prompt served as a foundational document that outlined the vision and requirements for the project.
+
 Momma's Little Helper" Breathing App
 
 ## CONTEXT

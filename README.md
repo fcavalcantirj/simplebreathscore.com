@@ -1,5 +1,3 @@
-[Component: internetSearch]
-
 # SimpleBreathScore
 
 ![SimpleBreathScore Logo](public/assets/logo.png)
@@ -23,6 +21,7 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Scoring Algorithm](#scoring-algorithm)
+- [Development Prompt](#development-prompt)
 - [Contributing](#contributing)
 - [Roadmap](#roadmap)
 - [License](#license)
@@ -219,6 +218,10 @@ function calculateBreathingScore(startTime, inhaleTimestamps, exhaleTimestamps, 
 - **5.00-6.99**: Intermediate (4-6 BPM)
 - **0.01-4.99**: Beginner (6-12 BPM)
 - **0.00**: Needs practice (>12 BPM)
+
+## 🎯 Development Prompt
+
+The initial development prompt and requirements that guided the creation of this project can be found in [docs/prompt.md](docs/prompt.md).
 
 ## 👥 Contributing
 
