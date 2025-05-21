@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/34e01670-6d2a-48c8-9a11-7322c5df595b/deploy-status)](https://app.netlify.com/sites/simplebreathscore/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/34e01670-6d2a-48c8-9a11-7322c5df595b/deploy-status)](https://app.netlify.com/sites/simplebreathscore-com/deploys)
 
 > A modern breathing meditation tracker that helps you master the "One Minute Breath" technique from Kundalini Yoga – breathe better, live better.
 
