@@ -6,6 +6,7 @@ import { BreathingSessionProvider } from "@/contexts/breathing-session-context"
 import { UserPreferencesProvider } from "@/contexts/user-preferences-context"
 import { HistoryProvider } from "@/contexts/history-context"
 import { Marcellus, Outfit, Roboto_Mono } from "next/font/google"
+import GoogleAnalytics from './components/GoogleAnalytics'
 
 const marcellus = Marcellus({ subsets: ["latin"], weight: "400" })
 const outfit = Outfit({ subsets: ["latin"], weight: ["300", "500"] }) // 300=Light, 500=Medium
@@ -28,7 +29,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <UserPreferencesProvider>
             <HistoryProvider>
-              <BreathingSessionProvider>{children}</BreathingSessionProvider>
+              <BreathingSessionProvider>
+                <GoogleAnalytics />
+                {children}
+              </BreathingSessionProvider>
             </HistoryProvider>
           </UserPreferencesProvider>
         </ThemeProvider>
