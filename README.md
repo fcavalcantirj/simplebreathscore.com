@@ -14,18 +14,18 @@
 
 ## 📋 Table of Contents
 
-- [About the Project](#about-the-project)
-- [Key Features](#key-features)
-- [The One Minute Breath](#the-one-minute-breath)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Scoring Algorithm](#scoring-algorithm)
-- [Development Prompt](#development-prompt)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+- [About the Project](#-about-the-project)
+- [Key Features](#-key-features)
+- [The One Minute Breath](#️-the-one-minute-breath)
+- [Tech Stack](#️-tech-stack)
+- [Getting Started](#-getting-started)
+- [Usage](#-usage)
+- [Scoring Algorithm](#-scoring-algorithm)
+- [Development Prompt](#-development-prompt)
+- [Contributing](#-contributing)
+- [Roadmap](#️-roadmap)
+- [License](#-license)
+- [Acknowledgements](#-acknowledgements)
 
 ## 🧘 About the Project
 
@@ -77,13 +77,13 @@ This creates a rhythm of just one breath per minute—far below the average pers
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/) with React
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Framework**: [Next.js](https://nextjs.org) with React
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **Animation**: [Framer Motion](https://www.framer.com/motion)
 - **State Management**: React Context API
 - **Data Persistence**: localStorage with custom hooks
-- **Deployment**: Netlify/Vercel
-- **Typography**: Google Fonts (Inter, DM Serif Display)
+- **Deployment**: [Vercel](https://vercel.com)
+- **Typography**: [Google Fonts](https://fonts.google.com) (Inter, DM Serif Display)
 
 ## 🚀 Getting Started
 
@@ -233,7 +233,7 @@ Contributions are what make the open source community such an amazing place to l
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+For more information, please read our [Contributing Guidelines](https://github.com/fcavalcantirj/simplebreathscore.com/blob/main/CONTRIBUTING.md).
 
 ### Ways to Contribute
 
