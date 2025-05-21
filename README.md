@@ -221,7 +221,7 @@ function calculateBreathingScore(startTime, inhaleTimestamps, exhaleTimestamps, 
 
 ## 🎯 Development Prompt
 
-The initial development prompt and requirements that guided the creation of this project can be found in [docs/prompt.md](docs/prompt.md).
+The initial development prompt and requirements that guided the creation of this project can be found in the [GitHub repository](https://github.com/fcavalcantirj/simplebreathscore.com/blob/main/docs/prompt.md).
 
 ## 👥 Contributing
 
