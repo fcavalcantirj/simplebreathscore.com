@@ -5,61 +5,69 @@ import { useUserPreferencesContext } from "@/contexts/user-preferences-context"
 
 export function useAudioFeedback() {
   const { soundEnabled } = useUserPreferencesContext()
-  const audioCache = useRef<Record<string, AudioBuffer>>({})
   const audioContext = useRef<AudioContext | null>(null)
+
+  console.log('Audio feedback hook - sound enabled:', soundEnabled) // Debug log
 
   // Initialize audio context on client side
   useEffect(() => {
     if (typeof window !== "undefined" && !audioContext.current) {
       audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      console.log('Audio context created:', audioContext.current.state) // Debug log
     }
 
+    // Resume audio context on user interaction
+    const handleUserInteraction = async () => {
+      if (audioContext.current && audioContext.current.state === "suspended") {
+        try {
+          await audioContext.current.resume()
+          console.log('Audio context resumed:', audioContext.current.state) // Debug log
+        } catch (error) {
+          console.error('Error resuming audio context:', error)
+        }
+      }
+    }
+
+    // Add event listeners for user interaction
+    window.addEventListener("click", handleUserInteraction)
+    window.addEventListener("keydown", handleUserInteraction)
+    window.addEventListener("touchstart", handleUserInteraction)
+
     return () => {
+      window.removeEventListener("click", handleUserInteraction)
+      window.removeEventListener("keydown", handleUserInteraction)
+      window.removeEventListener("touchstart", handleUserInteraction)
       if (audioContext.current && audioContext.current.state !== 'closed') {
         audioContext.current.close()
       }
     }
   }, [])
 
-  // Load and cache audio
-  const loadAudio = useCallback(async (url: string): Promise<AudioBuffer> => {
-    if (!audioContext.current) return Promise.reject("Audio context not initialized")
-
-    if (audioCache.current[url]) {
-      return audioCache.current[url]
+  // Ensure audio context is resumed before playing
+  const ensureAudioContext = useCallback(async () => {
+    if (!audioContext.current) {
+      audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      console.log('Audio context created in ensureAudioContext:', audioContext.current.state) // Debug log
     }
-
-    try {
-      const response = await fetch(url)
-      const arrayBuffer = await response.arrayBuffer()
-      const audioBuffer = await audioContext.current.decodeAudioData(arrayBuffer)
-      audioCache.current[url] = audioBuffer
-      return audioBuffer
-    } catch (error) {
-      console.error("Error loading audio:", error)
-      throw error
+    
+    if (audioContext.current.state === "suspended") {
+      try {
+        await audioContext.current.resume()
+        console.log('Audio context resumed in ensureAudioContext:', audioContext.current.state) // Debug log
+      } catch (error) {
+        console.error('Error resuming audio context in ensureAudioContext:', error)
+      }
     }
   }, [])
 
-  // Play audio from buffer
-  const playAudio = useCallback(
-    (buffer: AudioBuffer) => {
-      if (!audioContext.current || !soundEnabled) return
-
-      const source = audioContext.current.createBufferSource()
-      source.buffer = buffer
-      source.connect(audioContext.current.destination)
-      source.start()
-    },
-    [soundEnabled],
-  )
-
   // Play specific sounds
-  const playInhaleSound = useCallback(() => {
+  const playInhaleSound = useCallback(async () => {
+    console.log('Playing inhale sound, sound enabled:', soundEnabled, 'audio context state:', audioContext.current?.state) // Debug log
     if (!soundEnabled) return
+    await ensureAudioContext()
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
+      console.log('Creating inhale oscillator') // Debug log
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
 
@@ -76,14 +84,17 @@ export function useAudioFeedback() {
 
       oscillator.start()
       oscillator.stop(audioContext.current.currentTime + 0.5)
+      console.log('Inhale oscillator started') // Debug log
     }
-  }, [soundEnabled])
+  }, [soundEnabled, ensureAudioContext])
 
-  const playExhaleSound = useCallback(() => {
+  const playExhaleSound = useCallback(async () => {
+    console.log('Playing exhale sound, sound enabled:', soundEnabled, 'audio context state:', audioContext.current?.state) // Debug log
     if (!soundEnabled) return
+    await ensureAudioContext()
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
+      console.log('Creating exhale oscillator') // Debug log
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
 
@@ -100,14 +111,17 @@ export function useAudioFeedback() {
 
       oscillator.start()
       oscillator.stop(audioContext.current.currentTime + 0.5)
+      console.log('Exhale oscillator started') // Debug log
     }
-  }, [soundEnabled])
+  }, [soundEnabled, ensureAudioContext])
 
-  const playStartSound = useCallback(() => {
+  const playStartSound = useCallback(async () => {
+    console.log('Playing start sound, sound enabled:', soundEnabled, 'audio context state:', audioContext.current?.state) // Debug log
     if (!soundEnabled) return
+    await ensureAudioContext()
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
+      console.log('Creating start oscillator') // Debug log
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
 
@@ -123,14 +137,17 @@ export function useAudioFeedback() {
 
       oscillator.start()
       oscillator.stop(audioContext.current.currentTime + 0.8)
+      console.log('Start oscillator started') // Debug log
     }
-  }, [soundEnabled])
+  }, [soundEnabled, ensureAudioContext])
 
-  const playEndSound = useCallback(() => {
+  const playEndSound = useCallback(async () => {
+    console.log('Playing end sound, sound enabled:', soundEnabled, 'audio context state:', audioContext.current?.state) // Debug log
     if (!soundEnabled) return
+    await ensureAudioContext()
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
+      console.log('Creating end oscillator') // Debug log
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
 
@@ -149,12 +166,11 @@ export function useAudioFeedback() {
 
       oscillator.start()
       oscillator.stop(audioContext.current.currentTime + 1.0)
+      console.log('End oscillator started') // Debug log
     }
-  }, [soundEnabled])
+  }, [soundEnabled, ensureAudioContext])
 
   return {
-    loadAudio,
-    playAudio,
     playInhaleSound,
     playExhaleSound,
     playStartSound,

@@ -36,6 +36,8 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     defaultPreferences,
   )
 
+  console.log('User preferences:', preferences)
+
   const toggleSound = () => {
     setPreferences((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }))
   }
