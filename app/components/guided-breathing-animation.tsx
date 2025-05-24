@@ -21,8 +21,8 @@ export function GuidedBreathingAnimation() {
           opacity: currentPhase === 'pause' ? 0.8 : 1,
         }}
       >
-        <div className="text-4xl font-light text-blue-500">
-          {currentPhase === 'inhale' ? '↑' : currentPhase === 'exhale' ? '↓' : '•'}
+        <div className="text-3xl font-semibold text-blue-500 capitalize">
+          {currentPhase === 'inhale' ? 'Inhale' : currentPhase === 'exhale' ? 'Exhale' : 'Pause'}
         </div>
       </div>
     </div>

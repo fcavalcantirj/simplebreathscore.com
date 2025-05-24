@@ -10,6 +10,7 @@ import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useUserPreferencesContext } from "@/contexts/user-preferences-context";
 import { AnimatedCard } from "@/components/animated-card";
 import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -39,6 +40,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   const [accuracySum, setAccuracySum] = useState(0);
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound } = useAudioFeedback();
   const { soundEnabled, toggleSound } = useUserPreferencesContext();
+  const router = useRouter();
 
   // Track elapsed session time for progress bar
   const [elapsedSessionTime, setElapsedSessionTime] = useState(0);
@@ -162,12 +164,6 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
               Average Accuracy: {totalBreaths > 0 ? (accuracySum / totalBreaths).toFixed(1) : 0}%
             </p>
           </div>
-          <Button 
-            className="w-full"
-            onClick={() => window.location.href = '/'}
-          >
-            Return Home
-          </Button>
         </CardContent>
       </AnimatedCard>
     );
@@ -176,6 +172,13 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   return (
     <AnimatedCard>
       <CardContent className="p-6 pb-4">
+        <Button
+          variant="ghost"
+          className="mb-4"
+          onClick={() => router.back()}
+        >
+          ← Back
+        </Button>
         {/* Session progress bar at the top */}
         <div className="w-full mb-4">
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
@@ -213,7 +216,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
             )}
           </div>
 
-          <div className="w-full max-w-[280px] md:max-w-md order-1">
+          <div className="w-full max-w-[280px] md:max-w-md order-1 mb-12">
             <BreathingAnimationProvider
               inhaleDuration={inhaleDuration}
               pauseDuration={pauseDuration}
