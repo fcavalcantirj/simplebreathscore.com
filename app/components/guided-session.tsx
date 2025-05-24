@@ -172,24 +172,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   return (
     <AnimatedCard>
       <CardContent className="p-6 pb-4">
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={() => router.back()}
-        >
-          ← Back
-        </Button>
-        {/* Session progress bar at the top */}
-        <div className="w-full mb-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-1">
-            <span>Session Progress</span>
-            <span>{sessionProgress.toFixed(0)}%</span>
-          </div>
-          <Progress value={sessionProgress} className="h-2" />
-        </div>
-        <div className="flex flex-col items-center gap-4">
-          <div className="text-center mb-2 md:mb-8 relative w-full">
-            <Button
+      <Button
               variant="ghost"
               size="icon"
               className="absolute top-0 right-0"
@@ -201,19 +184,27 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
                 <VolumeX className="h-4 w-4" />
               )}
             </Button>
+        {/* Session progress bar at the top */}
+        <div className="w-full mb-4">
+          <div className="flex justify-between text-sm text-muted-foreground mb-1">
+            <span>Session Progress</span>
+            <span>{sessionProgress.toFixed(0)}%</span>
+          </div>
+          <Progress value={sessionProgress} className="h-2" />
+        </div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-center mb-2 md:mb-8 relative w-full">
             <h2 className="text-2xl font-semibold mb-2">Guided Breathing Session</h2>
             <p className="text-muted-foreground mb-4">
               Follow the guided breathing pattern: {inhaleDuration}-{pauseDuration}-{exhaleDuration}
             </p>
-            {isActive && (
-              <div className="w-full space-y-2">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Current Phase: {currentPhase}</span>
-                  <span>{phaseProgress.toFixed(0)}%</span>
-                </div>
-                <Progress value={phaseProgress} className="h-2 border-2 border-red-500 bg-yellow-200" />
+            <div className="w-full space-y-2 mb-4">
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Current Phase: {currentPhase}</span>
+                <span>{phaseProgress.toFixed(0)}%</span>
               </div>
-            )}
+              <Progress value={phaseProgress} className="h-2" />
+            </div>
           </div>
 
           <div className="w-full max-w-[280px] md:max-w-md order-1 mb-12">
