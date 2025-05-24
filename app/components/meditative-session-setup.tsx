@@ -27,7 +27,15 @@ export function MeditativeSessionSetup() {
   };
 
   if (isSessionStarted) {
-    return <GuidedSession parameters={parameters} />;
+    return (
+      <GuidedSession
+        duration={parameters.sessionDuration}
+        inhaleDuration={parameters.inhaleDuration}
+        pauseDuration={parameters.pauseDuration}
+        exhaleDuration={parameters.exhaleDuration}
+        onComplete={() => {}}
+      />
+    );
   }
 
   return (

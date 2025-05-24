@@ -11,11 +11,32 @@ interface BreathingAnimationContextType {
   startExhaleAnimation: () => void
   startHoldAnimation: () => void
   resetAnimation: () => void
+  inhaleDuration?: number
+  pauseDuration?: number
+  exhaleDuration?: number
+  isActive?: boolean
+  currentPhase?: "inhale" | "pause" | "exhale"
 }
 
 export const BreathingAnimationContext = createContext<BreathingAnimationContextType | null>(null)
 
-export function BreathingAnimationProvider({ children }: { children: ReactNode }) {
+interface BreathingAnimationProviderProps {
+  children: ReactNode
+  inhaleDuration?: number
+  pauseDuration?: number
+  exhaleDuration?: number
+  isActive?: boolean
+  currentPhase?: "inhale" | "pause" | "exhale"
+}
+
+export function BreathingAnimationProvider({ 
+  children,
+  inhaleDuration,
+  pauseDuration,
+  exhaleDuration,
+  isActive,
+  currentPhase
+}: BreathingAnimationProviderProps) {
   const [animationState, setAnimationState] = useState<AnimationState>("idle")
 
   const startInhaleAnimation = useCallback(() => {
@@ -43,6 +64,11 @@ export function BreathingAnimationProvider({ children }: { children: ReactNode }
         startExhaleAnimation,
         startHoldAnimation,
         resetAnimation,
+        inhaleDuration,
+        pauseDuration,
+        exhaleDuration,
+        isActive,
+        currentPhase
       }}
     >
       {children}
