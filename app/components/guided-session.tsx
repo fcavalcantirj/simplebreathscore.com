@@ -38,7 +38,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   const [isComplete, setIsComplete] = useState(false);
   const [totalBreaths, setTotalBreaths] = useState(0);
   const [accuracySum, setAccuracySum] = useState(0);
-  const { playInhaleSound, playExhaleSound, playStartSound, playEndSound } = useAudioFeedback();
+  const { playInhaleSound, playExhaleSound, playStartSound, playEndSound, playPauseSound } = useAudioFeedback();
   const { soundEnabled, toggleSound } = useUserPreferencesContext();
   const router = useRouter();
 
@@ -61,6 +61,14 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
       averageAccuracy: totalBreaths > 0 ? accuracySum / totalBreaths : 0
     });
   };
+
+  useEffect(() => {
+    if (!isActive) return;
+    console.log('Current phase:', currentPhase);
+    if (currentPhase === 'inhale' && soundEnabled) playInhaleSound();
+    if (currentPhase === 'pause' && soundEnabled) playPauseSound();
+    if (currentPhase === 'exhale' && soundEnabled) playExhaleSound();
+  }, [currentPhase, isActive, soundEnabled]);
 
   useEffect(() => {
     if (!isActive) return;
@@ -87,13 +95,11 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
         phaseStartTime = now;
         if (currentPhase === 'inhale') {
           setCurrentPhase('pause');
-          if (soundEnabled) playExhaleSound();
         } else if (currentPhase === 'pause') {
           setCurrentPhase('exhale');
         } else {
           setCurrentPhase('inhale');
           setTotalBreaths(prev => prev + 1);
-          if (soundEnabled) playInhaleSound();
         }
       }
     };

@@ -134,10 +134,34 @@ export function useAudioFeedback() {
     }
   }, [soundEnabled])
 
+  const playPauseSound = useCallback(async () => {
+    if (!soundEnabled) return;
+  
+    if (audioContext.current) {
+      const oscillator = audioContext.current.createOscillator();
+      const gainNode = audioContext.current.createGain();
+  
+      oscillator.type = "triangle"; // som mais "click"
+      oscillator.frequency.setValueAtTime(600, audioContext.current.currentTime); // Frequência um pouco mais alta
+  
+      gainNode.gain.setValueAtTime(0, audioContext.current.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.15, audioContext.current.currentTime + 0.05); // ataque rápido
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.current.currentTime + 0.2); // Decaimento rápido e não linear
+  
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.current.destination);
+  
+      oscillator.start();
+      oscillator.stop(audioContext.current.currentTime + 0.2); // Som bem curto
+    }
+  }, [soundEnabled]);
+  
+
   return {
     playInhaleSound,
     playExhaleSound,
     playStartSound,
     playEndSound,
+    playPauseSound,
   }
 }
