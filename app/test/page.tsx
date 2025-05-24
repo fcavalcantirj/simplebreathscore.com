@@ -1,6 +1,7 @@
 'use client';
 
 import { BreathingAnimationProvider } from "@/contexts/breathing-animation-context";
+import { UserPreferencesProvider } from "@/contexts/user-preferences-context";
 import BreathingSession from "@/components/breathing-session";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -17,9 +18,11 @@ export default function TestPage() {
       >
         ← Back
       </Button>
-      <BreathingAnimationProvider>
-        <BreathingSession />
-      </BreathingAnimationProvider>
+      <UserPreferencesProvider>
+        <BreathingAnimationProvider>
+          <BreathingSession />
+        </BreathingAnimationProvider>
+      </UserPreferencesProvider>
     </div>
   );
 } 
