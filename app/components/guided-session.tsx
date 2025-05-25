@@ -167,9 +167,6 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
             <p className="text-sm text-muted-foreground">
               Total Breaths: {totalBreaths}
             </p>
-            <p className="text-sm text-muted-foreground">
-              Average Accuracy: {totalBreaths > 0 ? (accuracySum / totalBreaths).toFixed(1) : 0}%
-            </p>
           </div>
         </CardContent>
       </AnimatedCard>
