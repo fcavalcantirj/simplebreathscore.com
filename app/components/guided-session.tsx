@@ -14,6 +14,7 @@ import { SoundToggleButtonPortal } from "@/components/sound-toggle-button";
 import { useBreathingScore } from "@/hooks/use-breathing-score"
 import { useHistoryContext } from "@/contexts/history-context"
 import SessionResults from "@/components/session-results"
+import Link from "next/link";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -194,73 +195,79 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   }
 
   return (
-    <AnimatedCard>
-      <CardContent className="p-6 pb-4">
-        <SoundToggleButtonPortal disabled={isActive} />
-        <div className="w-full mb-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-1">
-            <span>Session Progress</span>
-            <span>{sessionProgress.toFixed(0)}%</span>
-          </div>
-          <Progress value={sessionProgress} className="h-2" />
-        </div>
-        <div className="flex flex-col items-center gap-4">
-          <div className="text-center mb-8 relative w-full">
-            <h2 className="text-2xl font-semibold mb-2">Guided Breathing Session</h2>
-            <p className="text-muted-foreground mb-4">
-              Follow the guided breathing pattern: {inhaleDuration}-{pauseDuration}-{exhaleDuration}
-            </p>
-            <div className="w-full space-y-2 mb-4">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Current Phase: {currentPhase}</span>
-                <span>{phaseProgress.toFixed(0)}%</span>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
+      <div className="w-full max-w-2xl">
+        <BreathingAnimationProvider>
+          <AnimatedCard>
+            <CardContent className="p-6 pb-4">
+              <SoundToggleButtonPortal disabled={isActive} />
+              <div className="w-full mb-4">
+                <div className="flex justify-between text-sm text-muted-foreground mb-1">
+                  <span>Session Progress</span>
+                  <span>{sessionProgress.toFixed(0)}%</span>
+                </div>
+                <Progress value={sessionProgress} className="h-2" />
               </div>
-              <Progress value={phaseProgress} className="h-2" />
-            </div>
-          </div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-center mb-8 relative w-full">
+                  <h2 className="text-2xl font-semibold mb-2">Guided Breathing Session</h2>
+                  <p className="text-muted-foreground mb-4">
+                    Follow the guided breathing pattern: {inhaleDuration}-{pauseDuration}-{exhaleDuration}
+                  </p>
+                  <div className="w-full space-y-2 mb-4">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Current Phase: {currentPhase}</span>
+                      <span>{phaseProgress.toFixed(0)}%</span>
+                    </div>
+                    <Progress value={phaseProgress} className="h-2" />
+                  </div>
+                </div>
 
-          <div className="w-full max-w-[280px] md:max-w-md order-1 mb-12">
-            <BreathingAnimationProvider
-              inhaleDuration={inhaleDuration}
-              pauseDuration={pauseDuration}
-              exhaleDuration={exhaleDuration}
-              isActive={isActive}
-              currentPhase={currentPhase}
-            >
-              <GuidedBreathingAnimation />
-            </BreathingAnimationProvider>
-          </div>
+                <div className="w-full max-w-[280px] md:max-w-md order-1 mb-12">
+                  <BreathingAnimationProvider
+                    inhaleDuration={inhaleDuration}
+                    pauseDuration={pauseDuration}
+                    exhaleDuration={exhaleDuration}
+                    isActive={isActive}
+                    currentPhase={currentPhase}
+                  >
+                    <GuidedBreathingAnimation />
+                  </BreathingAnimationProvider>
+                </div>
 
-          <div className="w-full order-2">
-            {!isActive ? (
-              <div className="flex justify-center">
-                <Button size="lg" onClick={handleStartSession} className="px-8">
-                  <Play className="mr-2 h-4 w-4" />
-                  Start Session
-                </Button>
+                <div className="w-full order-2">
+                  {!isActive ? (
+                    <div className="flex justify-center">
+                      <Button size="lg" onClick={handleStartSession} className="px-8">
+                        <Play className="mr-2 h-4 w-4" />
+                        Start Session
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-center">
+                      <Button variant="destructive" size="lg" onClick={handleStopSession} className="px-8">
+                        <Pause className="mr-2 h-4 w-4" />
+                        End Session
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-2 md:mb-6 w-full order-3 md:order-1">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Time</p>
+                    <p className="text-2xl font-mono">{formatTime(timeRemaining)}</p>
+                  </div>
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Breaths</p>
+                    <p className="text-2xl font-mono">{totalBreaths}</p>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className="flex justify-center">
-                <Button variant="destructive" size="lg" onClick={handleStopSession} className="px-8">
-                  <Pause className="mr-2 h-4 w-4" />
-                  End Session
-                </Button>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-2 md:mb-6 w-full order-3 md:order-1">
-            <div className="bg-muted rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground">Time</p>
-              <p className="text-2xl font-mono">{formatTime(timeRemaining)}</p>
-            </div>
-            <div className="bg-muted rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground">Breaths</p>
-              <p className="text-2xl font-mono">{totalBreaths}</p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </AnimatedCard>
+            </CardContent>
+          </AnimatedCard>
+        </BreathingAnimationProvider>
+      </div>
+    </div>
   );
 } 

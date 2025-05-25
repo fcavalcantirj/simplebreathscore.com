@@ -4,6 +4,7 @@ import { MeditativeSessionSetup } from "../components/meditative-session-setup";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { UserPreferencesProvider } from "@/contexts/user-preferences-context";
+import Link from "next/link";
 
 export default function MeditatePage() {
   const router = useRouter();

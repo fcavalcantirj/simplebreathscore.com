@@ -9,22 +9,6 @@ export function HomeOptions() {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
-      <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <CardTitle>Quick Test</CardTitle>
-          <CardDescription>
-            Take a quick breathing test to measure your current breathing pattern
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            className="w-full"
-            onClick={() => router.push('/test')}
-          >
-            Start Quick Test
-          </Button>
-        </CardContent>
-      </Card>
 
       <Card className="hover:shadow-lg transition-shadow">
         <CardHeader>
@@ -42,6 +26,24 @@ export function HomeOptions() {
           </Button>
         </CardContent>
       </Card>
+
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardHeader>
+          <CardTitle>Quick Test</CardTitle>
+          <CardDescription>
+            Take a quick breathing test to measure your current breathing pattern
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button 
+            className="w-full"
+            onClick={() => router.push('/test')}
+          >
+            Start Quick Test
+          </Button>
+        </CardContent>
+      </Card>
+
     </div>
   );
 } 
