@@ -49,6 +49,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
     setIsActive(true);
     setCurrentPhase('inhale');
     setTimeRemaining(duration * 60);
+    setTotalBreaths(1);
     await playStartSound();
   };
 
@@ -199,7 +200,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
           <Progress value={sessionProgress} className="h-2" />
         </div>
         <div className="flex flex-col items-center gap-4">
-          <div className="text-center mb-2 md:mb-8 relative w-full">
+          <div className="text-center mb-8 relative w-full">
             <h2 className="text-2xl font-semibold mb-2">Guided Breathing Session</h2>
             <p className="text-muted-foreground mb-4">
               Follow the guided breathing pattern: {inhaleDuration}-{pauseDuration}-{exhaleDuration}
