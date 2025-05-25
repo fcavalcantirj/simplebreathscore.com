@@ -1,36 +1,20 @@
-"use client"
+'use client'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { formatTime, formatDate } from "@/lib/utils"
-import { motion } from "framer-motion"
-import { useHistoryContext } from "@/contexts/history-context"
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { Button } from "@/components/ui/button"
+import { useHistoryContext } from "@/contexts/history-context"
+import { motion } from "framer-motion"
+import { formatDate } from "@/lib/utils"
+
+function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+}
 
 export default function HistoryView() {
   const { sessionHistory, clearHistory } = useHistoryContext()
-
-  if (sessionHistory.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground">
-            No session history yet. Complete a breathing session to see your progress.
-          </p>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  // Prepare data for chart
-  const chartData = sessionHistory
-    .slice(0, 10) // Last 10 sessions
-    .map((session, index) => ({
-      name: `Session ${sessionHistory.length - index}`,
-      score: session.score,
-      bpm: session.breathCount / (session.duration / (1000 * 60)),
-    }))
-    .reverse()
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -40,27 +24,6 @@ export default function HistoryView() {
           Clear History
         </Button>
       </div>
-
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Progress Chart</CardTitle>
-          <CardDescription>Your breathing performance over time</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <XAxis dataKey="name" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip />
-                <Line yAxisId="left" type="monotone" dataKey="score" stroke="#8884d8" name="Score" />
-                <Line yAxisId="right" type="monotone" dataKey="bpm" stroke="#82ca9d" name="Breaths/Min" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
@@ -92,4 +55,4 @@ export default function HistoryView() {
       </Card>
     </motion.div>
   )
-}
+} 

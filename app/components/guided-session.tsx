@@ -11,6 +11,9 @@ import { AnimatedCard } from "@/components/animated-card";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
 import { SoundToggleButtonPortal } from "@/components/sound-toggle-button";
+import { useBreathingScore } from "@/hooks/use-breathing-score"
+import { useHistoryContext } from "@/contexts/history-context"
+import SessionResults from "@/components/session-results"
 
 interface SessionParameters {
   sessionDuration: number;
@@ -35,9 +38,11 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [sessionProgress, setSessionProgress] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(duration * 60);
-  const [isComplete, setIsComplete] = useState(false);
   const [totalBreaths, setTotalBreaths] = useState(0);
-  const [accuracySum, setAccuracySum] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [sessionScore, setSessionScore] = useState(0);
+  const { calculateScore } = useBreathingScore();
+  const { addSessionToHistory, clearHistory } = useHistoryContext();
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound, playPauseSound } = useAudioFeedback();
   const router = useRouter();
 
@@ -54,12 +59,32 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
 
   const handleStopSession = async () => {
     setIsActive(false);
-    setIsComplete(true);
     await playEndSound();
-    onComplete({
-      totalBreaths,
-      averageAccuracy: totalBreaths > 0 ? accuracySum / totalBreaths : 0
+
+    // For guided sessions, we use a fixed score since we're following a pattern
+    const score = 10.0; // Perfect score since we're following the guided pattern exactly
+
+    setSessionScore(score);
+
+    // Add to history
+    addSessionToHistory({
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      duration: Math.floor(elapsedSessionTime), // Convert to seconds
+      breathCount: totalBreaths,
+      score: score,
+      inhaleTimestamps: [], // Not needed for guided sessions
+      exhaleTimestamps: [], // Not needed for guided sessions
     });
+
+    // Show results after a short delay to allow the end sound to play
+    setTimeout(() => {
+      setShowResults(true);
+      onComplete({
+        totalBreaths,
+        averageAccuracy: score
+      });
+    }, 1000);
   };
 
   useEffect(() => {
@@ -131,13 +156,13 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
       interval = setInterval(() => {
         setElapsedSessionTime(prev => prev + 1);
       }, 1000);
-    } else if (!isActive && !isComplete) {
+    } else {
       setElapsedSessionTime(0);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, isComplete]);
+  }, [isActive]);
 
   // Update session progress bar value
   useEffect(() => {
@@ -151,24 +176,20 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  if (isComplete) {
+  if (showResults) {
     return (
-      <AnimatedCard>
-        <CardContent className="p-6 space-y-6">
-          <div className="text-center space-y-2">
-            <p className="text-lg">Great job completing your meditation session!</p>
-            <p className="text-sm text-muted-foreground">
-              Duration: {duration} minutes
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Pattern: {inhaleDuration}-{pauseDuration}-{exhaleDuration}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Total Breaths: {totalBreaths}
-            </p>
-          </div>
-        </CardContent>
-      </AnimatedCard>
+      <SessionResults
+        score={sessionScore}
+        duration={elapsedSessionTime}
+        breathCount={totalBreaths}
+        onClose={() => {
+          setShowResults(false);
+          onComplete({
+            totalBreaths,
+            averageAccuracy: sessionScore
+          });
+        }}
+      />
     );
   }
 

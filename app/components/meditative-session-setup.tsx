@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { GuidedSession } from "./guided-session";
+import SessionResults from "@/components/session-results";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -21,10 +22,30 @@ export function MeditativeSessionSetup() {
     exhaleDuration: 4,
   });
   const [isSessionStarted, setIsSessionStarted] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [sessionResults, setSessionResults] = useState<{
+    totalBreaths: number;
+    averageAccuracy: number;
+  } | null>(null);
 
   const handleStartSession = () => {
     setIsSessionStarted(true);
+    setShowResults(false);
   };
+
+  if (showResults && sessionResults) {
+    return (
+      <SessionResults
+        score={sessionResults.averageAccuracy}
+        duration={parameters.sessionDuration * 60}
+        breathCount={sessionResults.totalBreaths}
+        onClose={() => {
+          setShowResults(false);
+          setIsSessionStarted(false);
+        }}
+      />
+    );
+  }
 
   if (isSessionStarted) {
     return (
@@ -33,7 +54,10 @@ export function MeditativeSessionSetup() {
         inhaleDuration={parameters.inhaleDuration}
         pauseDuration={parameters.pauseDuration}
         exhaleDuration={parameters.exhaleDuration}
-        onComplete={() => {}}
+        onComplete={(results) => {
+          setSessionResults(results);
+          setShowResults(true);
+        }}
       />
     );
   }
