@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GuidedSession } from "./guided-session";
 import SessionResults from "@/components/session-results";
+import { useSessionStorage } from "@/hooks/use-session-storage";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -14,13 +15,18 @@ interface SessionParameters {
   exhaleDuration: number;
 }
 
+const defaultParameters: SessionParameters = {
+  sessionDuration: 5,
+  inhaleDuration: 4,
+  pauseDuration: 4,
+  exhaleDuration: 4,
+};
+
 export function MeditativeSessionSetup() {
-  const [parameters, setParameters] = useState<SessionParameters>({
-    sessionDuration: 5,
-    inhaleDuration: 4,
-    pauseDuration: 4,
-    exhaleDuration: 4,
-  });
+  const [parameters, setParameters] = useSessionStorage<SessionParameters>(
+    "breathing-app-settings",
+    defaultParameters
+  );
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [sessionResults, setSessionResults] = useState<{
