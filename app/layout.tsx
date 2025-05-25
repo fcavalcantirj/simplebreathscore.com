@@ -8,13 +8,14 @@ import { Marcellus, Outfit, Roboto_Mono } from "next/font/google"
 import GoogleAnalytics from './components/GoogleAnalytics'
 import { SoundToggleButtonPortal } from "@/components/sound-toggle-button"
 import { SoundProvider } from "@/contexts/sound-context"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const marcellus = Marcellus({ subsets: ["latin"], weight: "400" })
 const outfit = Outfit({ subsets: ["latin"], weight: ["300", "500"] }) // 300=Light, 500=Medium
 const robotoMono = Roboto_Mono({ subsets: ["latin"], weight: "300" }) // 300=Light
 
 export const metadata = {
-  title: "Momma's Little Helper | Breathing Meditation App",
+  title: "SimpleBreathScore | Breathing Meditation App",
   description: "Master slow, controlled breathing techniques with our sophisticated scoring algorithm",
   generator: 'v0.dev'
 }
@@ -30,6 +31,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <SoundProvider>
             <SoundToggleButtonPortal />
+            <ThemeToggle />
             <UserPreferencesProvider>
               <HistoryProvider>
                 <BreathingSessionProvider>
