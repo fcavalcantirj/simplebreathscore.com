@@ -7,6 +7,8 @@ import { UserPreferencesProvider } from "@/contexts/user-preferences-context"
 import { HistoryProvider } from "@/contexts/history-context"
 import { Marcellus, Outfit, Roboto_Mono } from "next/font/google"
 import GoogleAnalytics from './components/GoogleAnalytics'
+import { SoundToggleButtonPortal } from "@/components/sound-toggle-button"
+import { SoundProvider } from "@/contexts/sound-context"
 
 const marcellus = Marcellus({ subsets: ["latin"], weight: "400" })
 const outfit = Outfit({ subsets: ["latin"], weight: ["300", "500"] }) // 300=Light, 500=Medium
@@ -15,7 +17,7 @@ const robotoMono = Roboto_Mono({ subsets: ["latin"], weight: "300" }) // 300=Lig
 export const metadata = {
   title: "Momma's Little Helper | Breathing Meditation App",
   description: "Master slow, controlled breathing techniques with our sophisticated scoring algorithm",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -27,14 +29,17 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={outfit.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <UserPreferencesProvider>
-            <HistoryProvider>
-              <BreathingSessionProvider>
-                <GoogleAnalytics />
-                {children}
-              </BreathingSessionProvider>
-            </HistoryProvider>
-          </UserPreferencesProvider>
+          <SoundProvider>
+            <SoundToggleButtonPortal />
+            <UserPreferencesProvider>
+              <HistoryProvider>
+                <BreathingSessionProvider>
+                  <GoogleAnalytics />
+                  {children}
+                </BreathingSessionProvider>
+              </HistoryProvider>
+            </UserPreferencesProvider>
+          </SoundProvider>
         </ThemeProvider>
         {process.env.NODE_ENV === "development" && (
           <div id="__next-bottom-left-button" />

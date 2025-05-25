@@ -1,16 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import BreathingControls from "@/components/breathing-controls"
 import BreathingVisualizer from "@/components/breathing-visualizer"
 import { useBreathingSession } from "@/hooks/use-breathing-session"
 import { useBreathingScore } from "@/hooks/use-breathing-score"
-import { useBreathingAnimation } from "@/hooks/use-breathing-animation"
 import { useAudioFeedback } from "@/hooks/use-audio-feedback"
 import { formatTime } from "@/lib/utils"
 import { useHistoryContext } from "@/contexts/history-context"
 import { AnimatedCard } from "@/components/animated-card"
+import { BreathingAnimationContext } from "@/contexts/breathing-animation-context"
+import SessionResults from "@/components/session-results"
+import { Volume2, VolumeX } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useSoundContext } from "@/contexts/sound-context"
 
 interface BreathingSessionProps {
   onSessionComplete?: () => void
@@ -18,14 +22,15 @@ interface BreathingSessionProps {
 
 export default function BreathingSession({ onSessionComplete }: BreathingSessionProps) {
   const { sessionState, startSession, stopSession, recordInhale, recordExhale } = useBreathingSession()
-
   const { calculateScore } = useBreathingScore()
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound } = useAudioFeedback()
-  const { animationState, setAnimationState } = useBreathingAnimation()
+  const { animationState, setAnimationState } = useContext(BreathingAnimationContext)!
   const { addSessionToHistory } = useHistoryContext()
 
   const [elapsedTime, setElapsedTime] = useState(0)
   const [breathCount, setBreathCount] = useState(0)
+  const [showResults, setShowResults] = useState(false)
+  const [sessionScore, setSessionScore] = useState(0)
 
   // Timer effect
   useEffect(() => {
@@ -51,15 +56,16 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
     setBreathCount(sessionState.inhaleTimestamps.length)
   }, [sessionState.inhaleTimestamps.length])
 
-  const handleStartSession = () => {
+  const handleStartSession = async () => {
     startSession()
     setAnimationState("inhale")
-    playStartSound()
+    await playStartSound()
+    setShowResults(false)
   }
 
-  const handleStopSession = () => {
+  const handleStopSession = async () => {
     stopSession()
-    playEndSound()
+    await playEndSound()
 
     // Calculate score and save to history
     if (sessionState.startTime && sessionState.inhaleTimestamps.length > 0) {
@@ -67,8 +73,10 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
         sessionState.startTime,
         sessionState.inhaleTimestamps,
         sessionState.exhaleTimestamps,
-        Date.now(),
+        sessionState.stopTime || Date.now(),
       )
+
+      setSessionScore(score)
 
       addSessionToHistory({
         id: Date.now().toString(),
@@ -80,30 +88,42 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
         exhaleTimestamps: sessionState.exhaleTimestamps,
       })
 
-      // Call onSessionComplete after a short delay to allow the end sound to play
+      // Show results after a short delay to allow the end sound to play
       setTimeout(() => {
+        setShowResults(true)
         onSessionComplete?.()
       }, 1000)
     }
   }
 
-  const handleInhale = () => {
+  const handleInhale = async () => {
     recordInhale()
     setAnimationState("exhale")
-    playInhaleSound()
+    await playInhaleSound()
   }
 
-  const handleExhale = () => {
+  const handleExhale = async () => {
     recordExhale()
     setAnimationState("inhale")
-    playExhaleSound()
+    await playExhaleSound()
+  }
+
+  if (showResults) {
+    return (
+      <SessionResults
+        score={sessionScore}
+        duration={elapsedTime}
+        breathCount={breathCount}
+        onClose={() => setShowResults(false)}
+      />
+    )
   }
 
   return (
     <AnimatedCard>
       <CardContent className="p-6 pb-4">
         <div className="flex flex-col items-center gap-4">
-          <div className="text-center mb-2 md:mb-8">
+          <div className="text-center mb-2 md:mb-8 relative w-full">
             <h2 className="text-2xl font-semibold mb-2">Breathing Session</h2>
             <p className="text-muted-foreground mb-4">
               Focus on slow, controlled breathing with the{" "}

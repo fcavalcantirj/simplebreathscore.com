@@ -1,11 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { useUserPreferencesContext } from "@/contexts/user-preferences-context"
+import { useSoundContext } from "@/contexts/sound-context"
 
 export function useAudioFeedback() {
-  const { soundEnabled } = useUserPreferencesContext()
-  const audioCache = useRef<Record<string, AudioBuffer>>({})
+  const { soundEnabled } = useSoundContext()
   const audioContext = useRef<AudioContext | null>(null)
 
   // Initialize audio context on client side
@@ -14,51 +13,37 @@ export function useAudioFeedback() {
       audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)()
     }
 
-    return () => {
-      if (audioContext.current && audioContext.current.state !== 'closed') {
-        audioContext.current.close()
+    // Resume audio context on user interaction
+    const handleUserInteraction = async () => {
+      if (audioContext.current && audioContext.current.state === "suspended") {
+        try {
+          await audioContext.current.resume()
+        } catch (error) {
+          console.error('Error resuming audio context:', error)
+        }
       }
     }
-  }, [])
 
-  // Load and cache audio
-  const loadAudio = useCallback(async (url: string): Promise<AudioBuffer> => {
-    if (!audioContext.current) return Promise.reject("Audio context not initialized")
+    // Add event listeners for user interaction
+    const events = ["click", "keydown", "touchstart", "mousedown", "focus"]
+    events.forEach(event => {
+      window.addEventListener(event, handleUserInteraction)
+    })
 
-    if (audioCache.current[url]) {
-      return audioCache.current[url]
-    }
+    // Try to resume immediately
+    handleUserInteraction()
 
-    try {
-      const response = await fetch(url)
-      const arrayBuffer = await response.arrayBuffer()
-      const audioBuffer = await audioContext.current.decodeAudioData(arrayBuffer)
-      audioCache.current[url] = audioBuffer
-      return audioBuffer
-    } catch (error) {
-      console.error("Error loading audio:", error)
-      throw error
+    return () => {
+      events.forEach(event => {
+        window.removeEventListener(event, handleUserInteraction)
+      })
     }
   }, [])
-
-  // Play audio from buffer
-  const playAudio = useCallback(
-    (buffer: AudioBuffer) => {
-      if (!audioContext.current || !soundEnabled) return
-
-      const source = audioContext.current.createBufferSource()
-      source.buffer = buffer
-      source.connect(audioContext.current.destination)
-      source.start()
-    },
-    [soundEnabled],
-  )
 
   // Play specific sounds
-  const playInhaleSound = useCallback(() => {
+  const playInhaleSound = useCallback(async () => {
     if (!soundEnabled) return
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
@@ -79,10 +64,9 @@ export function useAudioFeedback() {
     }
   }, [soundEnabled])
 
-  const playExhaleSound = useCallback(() => {
+  const playExhaleSound = useCallback(async () => {
     if (!soundEnabled) return
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
@@ -103,10 +87,9 @@ export function useAudioFeedback() {
     }
   }, [soundEnabled])
 
-  const playStartSound = useCallback(() => {
+  const playStartSound = useCallback(async () => {
     if (!soundEnabled) return
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
@@ -126,10 +109,9 @@ export function useAudioFeedback() {
     }
   }, [soundEnabled])
 
-  const playEndSound = useCallback(() => {
+  const playEndSound = useCallback(async () => {
     if (!soundEnabled) return
 
-    // Simulate sound with oscillator
     if (audioContext.current) {
       const oscillator = audioContext.current.createOscillator()
       const gainNode = audioContext.current.createGain()
@@ -152,12 +134,34 @@ export function useAudioFeedback() {
     }
   }, [soundEnabled])
 
+  const playPauseSound = useCallback(async () => {
+    if (!soundEnabled) return;
+  
+    if (audioContext.current) {
+      const oscillator = audioContext.current.createOscillator();
+      const gainNode = audioContext.current.createGain();
+  
+      oscillator.type = "triangle"; // som mais "click"
+      oscillator.frequency.setValueAtTime(600, audioContext.current.currentTime); // Frequência um pouco mais alta
+  
+      gainNode.gain.setValueAtTime(0, audioContext.current.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.15, audioContext.current.currentTime + 0.05); // ataque rápido
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.current.currentTime + 0.2); // Decaimento rápido e não linear
+  
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.current.destination);
+  
+      oscillator.start();
+      oscillator.stop(audioContext.current.currentTime + 0.2); // Som bem curto
+    }
+  }, [soundEnabled]);
+  
+
   return {
-    loadAudio,
-    playAudio,
     playInhaleSound,
     playExhaleSound,
     playStartSound,
     playEndSound,
+    playPauseSound,
   }
 }

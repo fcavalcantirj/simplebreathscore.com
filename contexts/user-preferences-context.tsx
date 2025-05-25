@@ -1,28 +1,24 @@
 "use client"
 
-import { createContext, useContext, type ReactNode } from "react"
+import { createContext, useContext, type ReactNode, useMemo } from "react"
 import { useSessionStorage } from "@/hooks/use-session-storage"
 
 interface UserPreferences {
-  soundEnabled: boolean
   vibrationEnabled: boolean
   darkMode: boolean
   guidedBreathingEnabled: boolean
 }
 
 interface UserPreferencesContextType {
-  soundEnabled: boolean
   vibrationEnabled: boolean
   darkMode: boolean
   guidedBreathingEnabled: boolean
-  toggleSound: () => void
   toggleVibration: () => void
   toggleDarkMode: () => void
   toggleGuidedBreathing: () => void
 }
 
 const defaultPreferences: UserPreferences = {
-  soundEnabled: true,
   vibrationEnabled: true,
   darkMode: false,
   guidedBreathingEnabled: true,
@@ -36,9 +32,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     defaultPreferences,
   )
 
-  const toggleSound = () => {
-    setPreferences((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }))
-  }
+  console.log('User preferences:', preferences)
 
   const toggleVibration = () => {
     setPreferences((prev) => ({ ...prev, vibrationEnabled: !prev.vibrationEnabled }))
@@ -52,16 +46,17 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     setPreferences((prev) => ({ ...prev, guidedBreathingEnabled: !prev.guidedBreathingEnabled }))
   }
 
+  const value = useMemo(() => ({
+    vibrationEnabled: preferences.vibrationEnabled,
+    darkMode: preferences.darkMode,
+    guidedBreathingEnabled: preferences.guidedBreathingEnabled,
+    toggleVibration,
+    toggleDarkMode,
+    toggleGuidedBreathing,
+  }), [preferences, toggleVibration, toggleDarkMode, toggleGuidedBreathing])
+
   return (
-    <UserPreferencesContext.Provider
-      value={{
-        ...preferences,
-        toggleSound,
-        toggleVibration,
-        toggleDarkMode,
-        toggleGuidedBreathing,
-      }}
-    >
+    <UserPreferencesContext.Provider value={value}>
       {children}
     </UserPreferencesContext.Provider>
   )
