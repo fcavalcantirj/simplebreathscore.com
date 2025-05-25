@@ -32,7 +32,7 @@ export default function HomePage() {
       <div className="absolute w-96 h-96 rounded-full bg-purple-200 dark:bg-purple-900 opacity-10 blur-3xl -bottom-48 -right-48" />
       
       {/* Logo/Title area */}
-      <div className="w-full text-center mb-10">
+      <div className="w-full text-center mb-10 mt-4">
         <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-slate-200 mb-2">SimpleBreathScore</h1>
         <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">Master your breathing, enhance your wellbeing</p>
       </div>
