@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAudioFeedback } from "@/hooks/use-audio-feedback";
 import { BreathingAnimationProvider } from "@/contexts/breathing-animation-context";
 import { GuidedBreathingAnimation } from "../components/guided-breathing-animation";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
-import { useUserPreferencesContext } from "@/contexts/user-preferences-context";
+import { Play, Pause } from "lucide-react";
 import { AnimatedCard } from "@/components/animated-card";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import { SoundToggleButtonPortal } from "@/components/sound-toggle-button";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -39,7 +39,6 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   const [totalBreaths, setTotalBreaths] = useState(0);
   const [accuracySum, setAccuracySum] = useState(0);
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound, playPauseSound } = useAudioFeedback();
-  const { soundEnabled, toggleSound } = useUserPreferencesContext();
   const router = useRouter();
 
   // Track elapsed session time for progress bar
@@ -66,10 +65,10 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   useEffect(() => {
     if (!isActive) return;
     console.log('Current phase:', currentPhase);
-    if (currentPhase === 'inhale' && soundEnabled) playInhaleSound();
-    if (currentPhase === 'pause' && soundEnabled) playPauseSound();
-    if (currentPhase === 'exhale' && soundEnabled) playExhaleSound();
-  }, [currentPhase, isActive, soundEnabled]);
+    if (currentPhase === 'inhale') playInhaleSound();
+    if (currentPhase === 'pause') playPauseSound();
+    if (currentPhase === 'exhale') playExhaleSound();
+  }, [currentPhase, isActive, playInhaleSound, playPauseSound, playExhaleSound]);
 
   useEffect(() => {
     if (!isActive) return;
@@ -107,7 +106,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
 
     const interval = setInterval(updatePhase, 50);
     return () => clearInterval(interval);
-  }, [isActive, currentPhase, inhaleDuration, pauseDuration, exhaleDuration, playInhaleSound, playExhaleSound, soundEnabled]);
+  }, [isActive, currentPhase, inhaleDuration, pauseDuration, exhaleDuration, playInhaleSound, playExhaleSound]);
 
   useEffect(() => {
     if (!isActive) return;
@@ -176,19 +175,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   return (
     <AnimatedCard>
       <CardContent className="p-6 pb-4">
-      <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-0 right-0"
-              onClick={toggleSound}
-            >
-              {soundEnabled ? (
-                <Volume2 className="h-4 w-4" />
-              ) : (
-                <VolumeX className="h-4 w-4" />
-              )}
-            </Button>
-        {/* Session progress bar at the top */}
+        <SoundToggleButtonPortal disabled={isActive} />
         <div className="w-full mb-4">
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
             <span>Session Progress</span>

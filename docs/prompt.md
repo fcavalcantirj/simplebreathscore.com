@@ -253,3 +253,77 @@ export function useBreathingSession() {
 
 ## DELIVER
 A complete React/Next.js application with properly structured components, custom hooks, and contexts. All code should follow React best practices with proper separation of concerns. The application should be deployable to Vercel or Netlify with minimal configuration. Include a README with setup instructions and detail of architectural decisions.
+
+
+
+================================== part two ===================================
+
+# Enhancement Prompt for Simple Breath Score - Local Development
+
+## CONTEXT
+You're working with the existing Simple Breath Score application (simplebreathscore.com) locally. The app currently provides a quick breathing test with scoring functionality. Based on feedback from a yoga teacher, we need to enhance it with a dedicated meditative session mode while preserving the existing quick test functionality.
+
+## CURRENT STATE
+- Working React/Next.js breathing app with scoring algorithm
+- Inhale/Exhale button interface with pleasant audio feedback
+- Performance scoring based on breathing patterns
+- Clean, simple UI design
+
+## ENHANCEMENT REQUEST
+
+### 1. **Homepage Redesign**
+Add two distinct pathways:
+- **"Quick Test"** button → Opens current scoring interface (preserve existing functionality)
+- **"Meditative Session"** button → Opens new guided meditation interface
+
+### 2. **New Meditative Session Interface**
+Create a pre-session setup screen with sliders for:
+- **Session Duration**: Total meditation length (e.g., 5-60 minutes)
+- **Inhale Duration**: Length in seconds (e.g., 4-20 seconds)
+- **Pause Duration**: Hold time in seconds (e.g., 4-20 seconds) 
+- **Exhale Duration**: Length in seconds (e.g., 4-20 seconds)
+
+### 3. **Guided Session Experience**
+Once user starts the meditative session:
+- **Visual Guide**: Clear indication of current phase (Inhale/Pause/Exhale)
+- **Audio Cues**: Different sounds for each phase transition
+  - Preserve the current pleasant inhale/exhale sounds
+  - Add subtle sound for pause phase
+  - End-of-session completion sound
+- **Timer Display**: Show progress through current breath cycle and overall session
+- **Automatic Progression**: No manual button pressing - follows the preset timing
+
+### 4. **Session Completion & Scoring**
+After the meditative session:
+- **Adherence Score**: Rate how well the user followed the preset timing
+- **Session Summary**: Display chosen parameters and completion status
+- **Option to Save**: Store session preferences for future use
+
+### 5. **Technical Implementation**
+- Maintain existing React/Next.js architecture
+- Preserve current scoring algorithm for quick tests
+- Add new scoring logic for guided session adherence
+- Keep the pleasant audio feedback system
+- Ensure smooth transitions between modes
+- Maintain responsive design
+
+### 6. **UI/UX Considerations**
+- Keep the clean, minimalist design aesthetic
+- Ensure intuitive slider controls with clear value displays
+- Provide visual feedback during the guided session
+- Make it easy to switch between quick test and meditative modes
+- Consider adding preset breathing patterns (4-4-4, 4-7-8, etc.)
+
+## SPECIFIC REQUIREMENTS
+- **Preserve**: All existing quick test functionality and scoring
+- **Enhance**: Add the guided meditation capability without breaking current features
+- **Maintain**: Current code quality and performance standards
+- **Test**: Both modes work seamlessly and audio cues are properly timed
+
+## DELIVERABLES
+- Enhanced local codebase with both quick test and meditative session modes
+- Clear separation between the two user flows
+- Preserved existing functionality while adding new guided meditation features
+- Updated documentation for the new features
+
+---

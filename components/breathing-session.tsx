@@ -14,7 +14,7 @@ import { BreathingAnimationContext } from "@/contexts/breathing-animation-contex
 import SessionResults from "@/components/session-results"
 import { Volume2, VolumeX } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useUserPreferencesContext } from "@/contexts/user-preferences-context"
+import { useSoundContext } from "@/contexts/sound-context"
 
 interface BreathingSessionProps {
   onSessionComplete?: () => void
@@ -26,7 +26,6 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound } = useAudioFeedback()
   const { animationState, setAnimationState } = useContext(BreathingAnimationContext)!
   const { addSessionToHistory } = useHistoryContext()
-  const { soundEnabled, toggleSound } = useUserPreferencesContext()
 
   const [elapsedTime, setElapsedTime] = useState(0)
   const [breathCount, setBreathCount] = useState(0)
@@ -125,18 +124,6 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
       <CardContent className="p-6 pb-4">
         <div className="flex flex-col items-center gap-4">
           <div className="text-center mb-2 md:mb-8 relative w-full">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-0 right-0"
-              onClick={toggleSound}
-            >
-              {soundEnabled ? (
-                <Volume2 className="h-4 w-4" />
-              ) : (
-                <VolumeX className="h-4 w-4" />
-              )}
-            </Button>
             <h2 className="text-2xl font-semibold mb-2">Breathing Session</h2>
             <p className="text-muted-foreground mb-4">
               Focus on slow, controlled breathing with the{" "}

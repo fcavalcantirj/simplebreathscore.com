@@ -1,10 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { useUserPreferencesContext } from "@/contexts/user-preferences-context"
+import { useSoundContext } from "@/contexts/sound-context"
 
 export function useAudioFeedback() {
-  const { soundEnabled } = useUserPreferencesContext()
+  const { soundEnabled } = useSoundContext()
   const audioContext = useRef<AudioContext | null>(null)
 
   // Initialize audio context on client side
