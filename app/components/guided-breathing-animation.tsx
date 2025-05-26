@@ -75,14 +75,18 @@ export function GuidedBreathingAnimation() {
     <div className="flex justify-center relative">
       <canvas ref={canvasRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 pointer-events-none z-10" />
       <div 
-        className="w-48 h-48 rounded-full bg-blue-500/20 flex items-center justify-center transition-all duration-1000 relative"
+        className="w-48 h-48 rounded-full flex items-center justify-center transition-all duration-1000 relative"
         style={{
           transform: `scale(${currentPhase === 'inhale' ? 1.5 : currentPhase === 'exhale' ? 0.8 : 1.2})`,
           opacity: currentPhase === 'pause' ? 0.8 : 1,
+          backgroundColor: 'rgba(37, 99, 235, 0.2)',
         }}
       >
-        <div className="text-3xl font-semibold text-blue-500 capitalize">
-          {currentPhase === 'inhale' ? 'Inhale' : currentPhase === 'exhale' ? 'Exhale' : 'Pause'}
+        <div className="absolute inset-0 rounded-full bg-blue-500/20 dark:bg-blue-500/30 blur-xl"></div>
+        <div className="relative rounded-full bg-blue-600/30 dark:bg-blue-500/40 w-full h-full flex items-center justify-center">
+          <div className="text-3xl font-semibold text-blue-600 dark:text-blue-400 capitalize">
+            {currentPhase === 'inhale' ? 'Inhale' : currentPhase === 'exhale' ? 'Exhale' : 'Pause'}
+          </div>
         </div>
       </div>
     </div>

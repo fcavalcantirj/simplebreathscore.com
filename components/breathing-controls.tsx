@@ -42,7 +42,11 @@ export default function BreathingControls({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <Button size="lg" onClick={onStartSession} className="px-8">
+          <Button 
+            size="lg" 
+            onClick={onStartSession} 
+            className="px-8 bg-blue-600 hover:bg-blue-700 transition shadow-md shadow-blue-600/10 text-white font-semibold"
+          >
             <Play className="mr-2 h-4 w-4" />
             Start Session
           </Button>
@@ -53,7 +57,7 @@ export default function BreathingControls({
             {animationState === "inhale" ? (
               <motion.button
                 type="button"
-                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-blue-500 text-white shadow-lg ring-4 ring-blue-300"
+                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-blue-600 text-white shadow-lg ring-4 ring-blue-300 dark:ring-blue-700 font-semibold"
                 onClick={onInhale}
                 animate="animate"
                 variants={pulse}
@@ -64,7 +68,7 @@ export default function BreathingControls({
             ) : (
               <button
                 type="button"
-                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-muted"
+                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold"
                 onClick={onInhale}
               >
                 <ArrowUp className="mr-2 h-6 w-6" />
@@ -74,7 +78,7 @@ export default function BreathingControls({
             {animationState === "exhale" ? (
               <motion.button
                 type="button"
-                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-blue-500 text-white shadow-lg ring-4 ring-blue-300"
+                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-blue-600 text-white shadow-lg ring-4 ring-blue-300 dark:ring-blue-700 font-semibold"
                 onClick={onExhale}
                 animate="animate"
                 variants={pulse}
@@ -85,7 +89,7 @@ export default function BreathingControls({
             ) : (
               <button
                 type="button"
-                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-muted"
+                className="h-24 text-lg rounded-lg w-full flex items-center justify-center transition-all bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold"
                 onClick={onExhale}
               >
                 <ArrowDown className="mr-2 h-6 w-6" />
@@ -95,7 +99,12 @@ export default function BreathingControls({
           </div>
 
           <div className="flex justify-center">
-            <Button variant="destructive" size="lg" onClick={onStopSession} className="px-8">
+            <Button 
+              variant="destructive" 
+              size="lg" 
+              onClick={onStopSession} 
+              className="px-8 bg-red-600 hover:bg-red-700 transition shadow-md shadow-red-600/10 text-white font-semibold"
+            >
               <Pause className="mr-2 h-4 w-4" />
               End Session
             </Button>

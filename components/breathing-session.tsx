@@ -120,68 +120,66 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
   }
 
   return (
-    <AnimatedCard>
-      <CardContent className="p-6 pb-4">
-        <div className="flex flex-col items-center gap-4">
-          <div className="text-center mb-2 md:mb-8 relative w-full">
-            <h2 className="text-2xl font-semibold mb-2">Breathing Session</h2>
-            <p className="text-muted-foreground mb-4">
-              Focus on slow, controlled breathing with the{" "}
-              <a
-                href="/pattern"
-                className="text-primary hover:underline inline-flex items-center"
+    <div className="p-0">
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-center mb-2 md:mb-8 relative w-full">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">Breathing Session</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            Focus on slow, controlled breathing with the{" "}
+            <a
+              href="/pattern"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 inline-flex items-center"
+            >
+              20-20-20 pattern
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="ml-1"
               >
-                20-20-20 pattern
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="ml-1"
-                >
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-              </a>
-            </p>
-            <p className="text-muted-foreground mb-4">
-              Need help? <a href="/instructions" className="text-blue-400 underline hover:text-blue-300">Read the instructions</a>
-            </p>
-          </div>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          </p>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            Need help? <a href="/instructions" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline">Read the instructions</a>
+          </p>
+        </div>
 
-          <div className="w-full max-w-[280px] md:max-w-md order-1">
-            <BreathingVisualizer animationState={animationState} />
-          </div>
+        <div className="w-full max-w-[280px] md:max-w-md order-1">
+          <BreathingVisualizer animationState={animationState} />
+        </div>
 
-          <div className="w-full order-2">
-            <BreathingControls
-              isActive={sessionState.isActive}
-              animationState={animationState}
-              onStartSession={handleStartSession}
-              onStopSession={handleStopSession}
-              onInhale={handleInhale}
-              onExhale={handleExhale}
-            />
-          </div>
+        <div className="w-full order-2">
+          <BreathingControls
+            isActive={sessionState.isActive}
+            animationState={animationState}
+            onStartSession={handleStartSession}
+            onStopSession={handleStopSession}
+            onInhale={handleInhale}
+            onExhale={handleExhale}
+          />
+        </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-2 md:mb-6 w-full order-3 md:order-1">
-            <div className="bg-muted rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground">Time</p>
-              <p className="text-2xl font-mono">{formatTime(elapsedTime)}</p>
-            </div>
-            <div className="bg-muted rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground">Breaths</p>
-              <p className="text-2xl font-mono">{breathCount}</p>
-            </div>
+        <div className="grid grid-cols-2 gap-4 mb-2 md:mb-6 w-full order-3 md:order-1">
+          <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400">Time</p>
+            <p className="text-2xl font-mono text-slate-800 dark:text-slate-200">{formatTime(elapsedTime)}</p>
+          </div>
+          <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400">Breaths</p>
+            <p className="text-2xl font-mono text-slate-800 dark:text-slate-200">{breathCount}</p>
           </div>
         </div>
-      </CardContent>
-    </AnimatedCard>
+      </div>
+    </div>
   )
 }

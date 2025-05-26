@@ -100,10 +100,10 @@ export default function BreathingVisualizer({ animationState }: BreathingVisuali
         animate={animationState}
       >
         <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
-          <div className="relative rounded-full bg-primary/30 w-32 h-32 flex items-center justify-center">
-            <div className="text-center text-primary-foreground">
-              <p className="text-sm uppercase tracking-wider">
+          <div className="absolute inset-0 rounded-full bg-blue-500/20 dark:bg-blue-500/30 blur-xl" />
+          <div className="relative rounded-full bg-blue-600/30 dark:bg-blue-500/40 w-32 h-32 flex items-center justify-center">
+            <div className="text-center text-white">
+              <p className="text-sm uppercase tracking-wider font-semibold">
                 {animationState === "idle" && "Ready"}
                 {animationState === "inhale" && "Inhale"}
                 {animationState === "exhale" && "Exhale"}
