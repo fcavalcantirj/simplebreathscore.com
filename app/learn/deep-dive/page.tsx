@@ -13,10 +13,10 @@ export default function DeepDivePage() {
       <div className="absolute w-96 h-96 rounded-full bg-purple-200 dark:bg-purple-900 opacity-10 blur-3xl -bottom-48 -right-48" />
       
       <div className="w-full max-w-2xl px-4 py-12">
-        <Link href="/" className="inline-flex items-center mb-8 text-blue-600 hover:text-blue-700 font-semibold">
+        <Link href="/" className="inline-flex items-center mb-8 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-            <path d="m12 19-7-7 7-7"></path>
             <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
           </svg>
           Back to Home
         </Link>

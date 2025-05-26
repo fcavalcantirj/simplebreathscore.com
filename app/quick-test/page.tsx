@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import { Suspense } from "react";
 import { BreathingAnimationProvider } from "@/contexts/breathing-animation-context";
 import BreathingSession from "@/components/breathing-session";
 
