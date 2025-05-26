@@ -10,11 +10,12 @@ import { Play, Pause } from "lucide-react";
 import { AnimatedCard } from "@/components/animated-card";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
-import { SoundToggleButtonPortal } from "@/components/sound-toggle-button";
+
 import { useBreathingScore } from "@/hooks/use-breathing-score"
 import { useHistoryContext } from "@/contexts/history-context"
 import SessionResults from "@/components/session-results"
 import Link from "next/link";
+import { useSessionState } from "@/hooks/use-session-state";
 
 interface SessionParameters {
   sessionDuration: number;
@@ -46,12 +47,14 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
   const { addSessionToHistory, clearHistory } = useHistoryContext();
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound, playPauseSound } = useAudioFeedback();
   const router = useRouter();
+  const { setSessionActive } = useSessionState();
 
   // Track elapsed session time for progress bar
   const [elapsedSessionTime, setElapsedSessionTime] = useState(0);
 
   const handleStartSession = async () => {
     setIsActive(true);
+    setSessionActive(true); // Disable sound toggle
     setCurrentPhase('inhale');
     setTimeRemaining(duration * 60);
     setTotalBreaths(1);
@@ -60,6 +63,7 @@ export function GuidedSession({ duration = 5, inhaleDuration, pauseDuration, exh
 
   const handleStopSession = async () => {
     setIsActive(false);
+    setSessionActive(false); // Re-enable sound toggle
     await playEndSound();
 
     // For guided sessions, we use a fixed score since we're following a pattern

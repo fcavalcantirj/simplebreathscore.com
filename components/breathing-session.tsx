@@ -15,6 +15,7 @@ import SessionResults from "@/components/session-results"
 import { Volume2, VolumeX } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSoundContext } from "@/contexts/sound-context"
+import { useSessionState } from "@/hooks/use-session-state"
 
 interface BreathingSessionProps {
   onSessionComplete?: () => void
@@ -26,6 +27,7 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
   const { playInhaleSound, playExhaleSound, playStartSound, playEndSound } = useAudioFeedback()
   const { animationState, setAnimationState } = useContext(BreathingAnimationContext)!
   const { addSessionToHistory } = useHistoryContext()
+  const { setSessionActive } = useSessionState()
 
   const [elapsedTime, setElapsedTime] = useState(0)
   const [breathCount, setBreathCount] = useState(0)
@@ -58,6 +60,7 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
 
   const handleStartSession = async () => {
     startSession()
+    setSessionActive(true) // Disable sound toggle
     setAnimationState("inhale")
     await playStartSound()
     setShowResults(false)
@@ -65,6 +68,7 @@ export default function BreathingSession({ onSessionComplete }: BreathingSession
 
   const handleStopSession = async () => {
     stopSession()
+    setSessionActive(false) // Re-enable sound toggle
     await playEndSound()
 
     // Calculate score and save to history
