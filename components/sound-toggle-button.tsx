@@ -15,7 +15,7 @@ function SoundToggleButton({ disabled }: SoundToggleButtonProps) {
     <button
       onClick={toggleSound}
       disabled={disabled}
-      className={`fixed top-6 right-6 z-50 rounded-full p-3 transition-all duration-300 ease-in-out
+      className={`fixed top-6 right-6 z-[80] rounded-full p-3 transition-all duration-300 ease-in-out
                  ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-105 hover:shadow-md'} 
                  ${soundEnabled ? 'bg-opacity-90' : 'bg-opacity-80'}
                  ${theme === 'dark' ? 'bg-slate-700 text-white shadow-slate-900/20' : 'bg-white text-slate-800 shadow-lg shadow-slate-200/50 border border-slate-100'}`}

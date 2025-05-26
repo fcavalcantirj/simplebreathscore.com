@@ -17,7 +17,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className={`fixed bottom-6 right-6 z-50 rounded-full p-3 transition-all duration-300 ease-in-out
+      className={`fixed bottom-6 right-6 z-[80] rounded-full p-3 transition-all duration-300 ease-in-out
                  cursor-pointer hover:scale-105 hover:shadow-md
                  ${theme === 'dark' 
                    ? 'bg-slate-700 text-amber-300 shadow-slate-900/20' 
