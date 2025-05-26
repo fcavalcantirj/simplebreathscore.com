@@ -175,6 +175,9 @@ export default function DeepDivePage() {
             </div>
           </div>
         </div>
+        {/* Footer */}
+        <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          Created by <a href="https://github.com/fcavalcantirj" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">fcavalcantirj</a> | © {new Date().getFullYear()} SimpleBreathScore - Master your breathing, enhance your wellbeing        </div>
       </div>
     </main>
   );
